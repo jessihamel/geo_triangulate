@@ -1,0 +1,73 @@
+@import './reset.css';
+@import url('https://fonts.googleapis.com/css?family=Electrolize|Open+Sans:400,600');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+}
+
+header {
+  padding: 15px;
+  border-bottom: 1px solid black;
+}
+h1 {
+  font-family: 'Electrolize', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  font-size: 1.5em;
+  margin-bottom: 8px;
+}
+h2 {
+  color: white;
+  font-size: 1em;
+}
+.ui {
+  margin: 25px 0;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+.button {
+  border: 1px solid black;
+  display: inline-block;
+  padding: 7px 8px 5px 8px;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin: 0 8px;
+}
+.button:hover {
+  color: #68B3AF;
+  border: 1px solid #68B3AF;
+}
+path {
+  stroke: black;
+  stroke-width: 0.5;
+}
+.step-header {
+  display: inline-block;
+  padding: 15px;
+  color: white;
+  font-family: 'Electrolize', sans-serif;
+  font-size: 1.3em;
+  text-transform: uppercase;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  position: absolute;
+}
+a:hover {
+  color: #68B3AF;
+}
+.slider {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
