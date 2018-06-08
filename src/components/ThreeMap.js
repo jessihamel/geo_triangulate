@@ -41,6 +41,15 @@ class ThreeMap extends Component {
     this.createMap()
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.mapData === this.props.mapData &&
+      nextProps.width === this.props.width
+    ) { return false }
+    return true
+  }
+
+
   addLights() {
     var lights = [
       new PointLight( 0xffffff, 0.4, 0 ),
@@ -107,6 +116,10 @@ class ThreeMap extends Component {
 
   cleanMapGroup() {
     this.scene.remove(this.mapGroup)
+    this.mapGroup.children.forEach(child => {
+      child.geometry.dispose()
+      child.material.dispose()
+    })
   }
 
   animate() {

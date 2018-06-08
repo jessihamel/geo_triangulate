@@ -1,5 +1,3 @@
-// const d3Geo = import 'd3-geo'
-// const geojsonCoords = require('@mapbox/geojson-coords')
 import { scaleLinear } from 'd3-scale'
 import { geoContains } from 'd3-geo'
 import * as geojsonCoords from '@mapbox/geojson-coords'
@@ -108,10 +106,14 @@ class Triangulate {
 
   deDupe(triangles) {
     const uniqueTrianglesIndex = []
-    const uniqueMidPts = []
+    const uniqueMidPts = {}
     triangles.forEach((triangle, index) => {
       const midPt = this.midPt(triangle)
-      const uniqueIndex = uniqueMidPts.findIndex(unique => {
+      const midPtRd = Math.floor(midPt[0])
+      if (!uniqueMidPts[midPtRd]) {
+        uniqueMidPts[midPtRd] = []
+      }
+      const uniqueIndex = uniqueMidPts[midPtRd].findIndex(unique => {
         return (
           this.almostEqual(unique[0], midPt[0]) &&
           this.almostEqual(unique[1], midPt[1])
@@ -119,7 +121,7 @@ class Triangulate {
       })
       if (uniqueIndex === -1) {
         uniqueTrianglesIndex.push(index)
-        uniqueMidPts.push(midPt)
+        uniqueMidPts[Math.floor(midPt[0])].push(midPt)
       }
     })
     return uniqueTrianglesIndex.map(index => triangles[index])

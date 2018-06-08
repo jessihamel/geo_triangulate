@@ -19,6 +19,14 @@ class Map extends Component {
     this.updateMap()
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (
+      nextProps.mapData === this.props.mapData &&
+      nextProps.width === this.props.width
+    ) { return false }
+    return true
+  }
+
   updateMap() {
     if (this.props.triangleMap) {
       this.drawTriangleMap()

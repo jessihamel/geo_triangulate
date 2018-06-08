@@ -25,23 +25,23 @@ h2 {
   font-size: 1em;
 }
 .ui {
-  margin: 25px 0;
+  margin: 15px 0;
   position: relative;
   display: inline-block;
   left: 50%;
   transform: translateX(-50%);
-
 }
 .button {
-  border: 1px solid black;
+  color: #2a5452;
+  border: 1px solid #2a5452;
   display: inline-block;
   padding: 7px 8px 5px 8px;
   border-radius: 3px;
   margin-bottom: 15px;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
-  text-transform: uppercase;
   margin: 0 8px;
+  font-family: 'Electrolize', sans-serif;
 }
 .button:hover {
   color: #68B3AF;
@@ -62,12 +62,31 @@ path {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   position: absolute;
+  z-index: 1;
+}
+a {
+  color: #2a5452;
 }
 a:hover {
   color: #68B3AF;
 }
-.slider {
+.slider-ui {
+  display: inline-block;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
+}
+.slider {
+  transform: translateY(3px);
+}
+.slider-ui span {
+  margin-right: 8px;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: 'Electrolize', sans-serif;
+  font-size: 1.3em;
 }
