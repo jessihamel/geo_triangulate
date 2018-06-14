@@ -1,4 +1,4 @@
-const palette = ['#D3E2B6','#C3DBB4','#AACCB1', '#87BDB1', '#68B3AF']
+const palette = ['#d3e2b6','#bcd6b3','#a4c9b1','#8abeb1','#68b3af']
 const colors = (index) => palette[index % palette.length]
 
 module.exports = { colors, palette }

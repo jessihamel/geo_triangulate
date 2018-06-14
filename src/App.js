@@ -6,12 +6,11 @@ import ThreeMap from './components/ThreeMap'
 import Loading from './components/Loading'
 import worldMap from './maps/world_simple.json'
 import triangleMap from './maps/world_triangles.json'
-import Triangulate from './triangulate.js'
 import TriangulateWorker from './triangulate.worker.js'
 import { palette } from './colorUtils.js'
 import { debounce } from './utils.js'
 const minComplexity = 0
-const maxComplexity = 2000
+const maxComplexity = 2500
 const defaultComplexity = 500
 
 class App extends Component {
@@ -91,8 +90,13 @@ class App extends Component {
     return (
       <div className='App'>
         <header style={{background: palette[4]}}>
-          <h1 className='title'>Geo Triangulate</h1>
-          <h2>convert geoJSON to triangles for 3d rendering</h2>
+          <div>
+            <h1 className='title'>Geo Triangulate</h1>
+            <h2>convert geoJSON to triangles for 3d rendering</h2>
+          </div>
+          <div>
+            <a href='https://github.com/jessihamel/geo_triangulate'>documentation</a>
+          </div>
         </header>
         <div className='step'>
           <div className='step-header' style={{background: palette[3], borderTop: 'none'}}>
@@ -103,7 +107,6 @@ class App extends Component {
           <div className='button' onClick={this.openUpload}>Upload geoJSON</div>
           <input
             type='file'
-            ref='input'
             style={{ display: 'none' }}
             accept='.json'
             ref={this.uploadRef}
@@ -132,20 +135,20 @@ class App extends Component {
           />
           <div className='button'
             onClick={this.calculateTriangles}
-          >Calculate</div>
+          >Generate Map</div>
         </div>
         <div style={{position: 'relative'}}>
           <Loading loading={this.state.loading} />
           <Map
             width={this.state.width}
-            mapData={this.state.triangleMap}
-            triangleMap={true} />
+            mapData={this.state.triangleMap} />
         </div>
         <div className='step'>
           <div className='step-header' style={{background: palette[1]}}>
             3D: Reflective Material
           </div>
         </div>
+        <div className='instruction'>click and drag to rotate globe</div>
         <div style={{position: 'relative'}}>
           <Loading loading={this.state.loading} />
           <ThreeMap

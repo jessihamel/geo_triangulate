@@ -28,14 +28,6 @@ class Map extends Component {
   }
 
   updateMap() {
-    if (this.props.triangleMap) {
-      this.drawTriangleMap()
-    } else {
-      this.drawStandardMap()
-    }
-  }
-
-  drawStandardMap() {
     const svg = select(this.mapRef.current)
     svg.selectAll('*').remove()
     const width = this.props.width
@@ -50,27 +42,7 @@ class Map extends Component {
     this.props.mapData.features.forEach((f, i) => {
       svg.append('path').classed('geography', true)
       .attr('d', geoPath().projection(proj)(f))
-      .attr('fill', colors(i))
-    })
-  }
-
-  drawTriangleMap() {
-    const svg = select(this.mapRef.current)
-    svg.selectAll('*').remove()
-    const W1_2 = this.props.width / 2
-    const H1_2 = height / 2
-    this.props.mapData.features.forEach((f, i) => {
-      f.triangles.forEach(t => {
-        let path = 'M '
-        t.forEach((c, j) => {
-          j === 0 ?
-            path += ((c[0] * 1.5) + W1_2 - (360 * 1.5)) + ' ' + ((c[1] * -1.5) + H1_2) + ' ':
-            path += 'L ' + ((c[0] * 1.5) + W1_2 - (360 * 1.5)) + ' ' + ((c[1] * -1.5) + H1_2) + ' '
-        })
-        svg.append('path')
-          .attr('d', path + 'Z')
-          .attr('fill', f.properties.nullData ? '#ffffff' : colors(i))
-      })
+      .attr('fill', f.properties.nullData ? '#ffffff' : colors(i))
     })
   }
 

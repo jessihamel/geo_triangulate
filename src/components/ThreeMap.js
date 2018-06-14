@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Scene, PerspectiveCamera, WebGLRenderer, PointLight, AmbientLight, Geometry, Mesh, MeshPhysicalMaterial, MeshBasicMaterial, Vector3, Face3, BackSide, Group } from 'three'
+import OrbitControls from 'orbit-controls-es6'
 import { colors } from '../colorUtils.js'
 
 const height = 300
@@ -30,6 +31,8 @@ class ThreeMap extends Component {
     this.renderer = new WebGLRenderer()
     this.renderer.setSize( this.props.width, height )
     this.renderer.setClearColor( 0xFFFFFF, 1 )
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement )
+    this.controls.enableZoom = false
     this.containerRef.current.appendChild( this.renderer.domElement )
     this.addLights()
     this.createMap()
@@ -37,6 +40,7 @@ class ThreeMap extends Component {
   }
 
   componentDidUpdate() {
+    this.updateDimensions()
     this.cleanMapGroup()
     this.createMap()
   }
@@ -49,6 +53,11 @@ class ThreeMap extends Component {
     return true
   }
 
+  updateDimensions() {
+    this.camera.aspect = this.props.width / height
+    this.camera.updateProjectionMatrix()
+    this.renderer.setSize( this.props.width, height )
+  }
 
   addLights() {
     var lights = [
@@ -90,9 +99,11 @@ class ThreeMap extends Component {
       const featureMaterial = this.props.material === 'basic' ?
         this.createBasicMaterial(f, i) :
         this.createPhysicalMaterial(f, i)
-      f.triangles.forEach(t => {
-        t.forEach(v => {
-          featureGeometry.vertices.push(convertCartesian(v))
+      f.geometry.coordinates[0].forEach(t => {
+        t.forEach((v, vi) => {
+          if (vi !== 3) {
+            featureGeometry.vertices.push(convertCartesian(v))
+          }
         })
         const vertexLength = featureGeometry.vertices.length
         featureGeometry.faces.push(
@@ -125,6 +136,7 @@ class ThreeMap extends Component {
   animate() {
     requestAnimationFrame( this.animate )
     this.mapGroup.rotation.z += 0.003
+    this.controls.update()
     this.renderer.render( this.scene, this.camera )
   }
 

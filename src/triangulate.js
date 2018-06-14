@@ -13,10 +13,10 @@ const precision = 1e5
 class Triangulate {
   getTriangles(mapData, nPoints) {
     const geoPoints = this.getGeoPoints(nPoints).concat(polePoints)
-    const allGeoPoints = geoPoints.concat(this.cloneRight(geoPoints))
+    const allGeoPoints = geoPoints.concat(this.cloneRightLeft(geoPoints))
     const allTopologyPoints = geojsonCoords(mapData)
     const allPoints = allTopologyPoints.concat(
-      this.cloneRight(allTopologyPoints), allGeoPoints
+      this.cloneRightLeft(allTopologyPoints), allGeoPoints
     ).map((p) => this.roundPoint(p)) // rounding prevents delaunay errors see https://github.com/mapbox/delaunator/issues/13
 
 
@@ -35,24 +35,33 @@ class Triangulate {
       .filter(triangle => this.isNearSeam(triangle) === false)
     filteredTriangles.sort((a,b) => {
       return (
-        Math.min.apply(null, a.map(p => p[0] > 180 ? p[0] : Infinity)) -
-        Math.min.apply(null, b.map(p => p[0] > 180 ? p[0] : Infinity))
+        Math.min.apply(null, a.map(p => p[0] > -180 ? p[0] : Infinity)) -
+        Math.min.apply(null, b.map(p => p[0] > -180 ? p[0] : Infinity))
       )
     })
 
     // output to be populated
+    console.log(mapData)
     const output = {
       type: 'FeatureCollection',
       features: mapData.features.map(feature => {
         return ({
-          triangles: [],
+          type: 'Feature',
+          geometry: {
+            type: 'MultiPolygon',
+            coordinates: [[]]
+          },
           properties: feature.properties
         })
       })
     }
     // add object for empty geometry on map, allows for creation of solid spheres
     output.features.push({
-      triangles: [],
+      type: 'Feature',
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: [[]]
+      },
       properties: {
         nullData: true
       }
@@ -62,12 +71,16 @@ class Triangulate {
       const midPt = this.midPt(triangle)
       // assign it to the correct geometry
       const index = this.findMatchingFeatureIndex(midPt, mapData)
+      const trianglePolygon = triangle.map(p => p)
+      trianglePolygon.push(triangle[0])
       if (index !== -1) {
-        output.features[index].triangles.push(triangle)
+        output.features[index].geometry.coordinates[0].push(trianglePolygon)
       } else {
-        output.features[output.features.length - 1].triangles.push(triangle)
+        output.features[output.features.length - 1].geometry.coordinates[0].push(trianglePolygon)
       }
     })
+    console.log(output)
+    debugger
     return output
   }
 
@@ -88,12 +101,12 @@ class Triangulate {
 
   /**
   * takes input geo geometry and duplicates it twice
-  * the effect is like taking a map and copy and pasting it twice so that you
-  * have three globes
+  * the effect is like taking a map and copy and pasting it so that you
+  * have two globes
   */
-  cloneRight(points) {
+  cloneRightLeft(points) {
     const map2 = points.map(p => [((p[0] * precision) + (360 * precision)) / precision, p[1]])
-    const map3 = points.map(p => [((p[0] * precision) + (720 * precision)) / precision, p[1]])
+    const map3 = points.map(p => [((p[0] * precision) + (-360 * precision)) / precision, p[1]])
     return map2.concat(map3)
   }
 
@@ -136,8 +149,8 @@ class Triangulate {
 
   isNearSeam(triangle) {
     return (
-      triangle[0][0] < 0 || triangle[1][0] < 0 || triangle[2][0] < 0 ||
-      triangle[0][0] > 720 || triangle[1][0] > 720 || triangle[2][0] > 720
+      triangle[0][0] < -360 || triangle[1][0] < -360 || triangle[2][0] < -360 ||
+      triangle[0][0] > 360 || triangle[1][0] > 360 || triangle[2][0] > 360
     )
   }
 
@@ -145,6 +158,9 @@ class Triangulate {
     let p0 = p[0]
     while (p0 > 180) {
       p0 -= 360
+    }
+    while (p0 < -180) {
+      p0 += 360
     }
     return this.roundPoint([p0, p[1]])
   }

@@ -11,29 +11,39 @@ body {
 header {
   padding: 15px;
   border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  align-items: center;
 }
 h1 {
   font-family: 'Electrolize', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: white;
   font-size: 1.5em;
   margin-bottom: 8px;
 }
 h2 {
-  color: white;
   font-size: 1em;
 }
+header a {
+  color: black;
+  text-decoration: underline;
+  font-family: 'Electrolize', sans-serif;
+  font-size: 18px;
+}
+header a:hover {
+  color: white;
+}
 .ui {
-  margin: 15px 0;
+  margin: 17px 0 15px 0;
   position: relative;
   display: inline-block;
   left: 50%;
   transform: translateX(-50%);
 }
 .button {
-  color: #2a5452;
-  border: 1px solid #2a5452;
+  border: 1px solid black;
   display: inline-block;
   padding: 7px 8px 5px 8px;
   border-radius: 3px;
@@ -65,7 +75,7 @@ path {
   z-index: 1;
 }
 a {
-  color: #2a5452;
+  color: black;
 }
 a:hover {
   color: #68B3AF;
@@ -75,9 +85,11 @@ a:hover {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
+  margin: 15px 0;
 }
 .slider {
   transform: translateY(3px);
+  margin: 0 15px;
 }
 .slider-ui span {
   margin-right: 8px;
@@ -89,4 +101,13 @@ a:hover {
   transform: translate(-50%,-50%);
   font-family: 'Electrolize', sans-serif;
   font-size: 1.3em;
+}
+.instruction {
+  text-align: center;
+  margin: 17px 0 15px 0;
+}
+@media only screen and (max-width: 700px) {
+  .step-header {
+    position: relative;
+  }
 }
