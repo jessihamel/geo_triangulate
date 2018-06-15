@@ -41,7 +41,6 @@ class Triangulate {
     })
 
     // output to be populated
-    console.log(mapData)
     const output = {
       type: 'FeatureCollection',
       features: mapData.features.map(feature => {
@@ -79,8 +78,6 @@ class Triangulate {
         output.features[output.features.length - 1].geometry.coordinates[0].push(trianglePolygon)
       }
     })
-    console.log(output)
-    debugger
     return output
   }
 
