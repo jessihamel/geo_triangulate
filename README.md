@@ -1,6 +1,6 @@
 # [Geo Triangulate](https://jessihamel.github.io/geo_triangulate)
 
-Geo Triangulate is a utility app that converts geojson files to triangles for rendering as a globe in three dimensions. It relies heavily on the awesome [d3-geo-voronoi] (https://github.com/Fil/d3-geo-voronoi) to calculate triangles.
+Geo Triangulate is a utility app that converts geojson files to triangles for rendering as a globe in three dimensions. It relies heavily on the awesome [d3-geo-voronoi](https://github.com/Fil/d3-geo-voronoi) to calculate triangles.
 
 Try it [here](https://jessihamel.github.io/geo_triangulate).
 
