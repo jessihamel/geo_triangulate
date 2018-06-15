@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { select, selectAll } from 'd3-selection'
-import { geoTransform, geoPath } from 'd3-geo'
+import { geoPath, geoEquirectangular } from 'd3-geo'
 import { colors } from '../colorUtils.js'
 
 const height = 300
@@ -31,14 +31,9 @@ class Map extends Component {
     const svg = select(this.mapRef.current)
     svg.selectAll('*').remove()
     const width = this.props.width
-    const proj = geoTransform({
-      point: function(x, y) {
-        this.stream.point(
-          (x * 1.5) + (width / 2),
-          (y * -1.5) + (height / 2)
-        )
-      }
-    })
+    const proj = geoEquirectangular()
+      .scale(90)
+      .translate([width / 2, height / 2])
     this.props.mapData.features.forEach((f, i) => {
       svg.append('path').classed('geography', true)
       .attr('d', geoPath().projection(proj)(f))

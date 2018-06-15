@@ -6,7 +6,7 @@ Try it [here](https://jessihamel.github.io/geo_triangulate).
 
 Upload any [GeoJSON](http://geojson.org/) file and click "Generate Map".
 
-Output is a GeoJSON FeatureCollection with triangle-shaped multiPolygons for each feature as well as triangles for empty areas (usually oceans or lakes).. (See below.) Triangles are encoded in two dimensions similar to longitude and latitude, but can be converted to three-dimensional cartesian coordinates for 3D rendering.
+Output is a GeoJSON FeatureCollection with triangle-shaped multiPolygons for each feature as well as an additional feature for empty areas--usually oceans or lakes. Triangles are encoded in two dimensions similar to longitude and latitude, but can be converted to three-dimensional cartesian coordinates for 3D rendering.
 
 ## Example output
 
