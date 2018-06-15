@@ -32,7 +32,7 @@ class Map extends Component {
     svg.selectAll('*').remove()
     const width = this.props.width
     const proj = geoEquirectangular()
-      .scale(90)
+      .scale(86)
       .translate([width / 2, height / 2])
     this.props.mapData.features.forEach((f, i) => {
       svg.append('path').classed('geography', true)

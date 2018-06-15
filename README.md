@@ -1,6 +1,6 @@
 # [Geo Triangulate](https://jessihamel.github.io/geo_triangulate)
 
-Geo Triangulate is a utility app that converts geojson files to triangles for rendering as a globe in three dimensions.
+Geo Triangulate is a utility app that converts geojson files to triangles for rendering as a globe in three dimensions. It relies heavily on the awesome [d3-geo-voronoi] (https://github.com/Fil/d3-geo-voronoi) to calculate triangles.
 
 Try it [here](https://jessihamel.github.io/geo_triangulate).
 
@@ -12,35 +12,37 @@ Output is a GeoJSON FeatureCollection with triangle-shaped multiPolygons for eac
 
 ```json
 {
-    "type":"FeatureCollection",
-    "features": [
-        {
-            "type":"Feature",
-            "geometry": {
-                "type":"MultiPolygon",
-                "coordinates":[
-                    [
-                        [[180,-16.06713],[180,-16.55522],[178.59684,-16.63915],[180,-16.06713]],
-                        [[178.72506,-17.01204],[178.59684,-16.63915],[180,-16.55522],[178.72506,-17.01204]]
-                    ]
-                ]
-            },
-            "properties":{}
-        },
-        {
-            "type":"Feature",
-            "geometry": {
-                "type":"MultiPolygon",
-                "coordinates":[
-                    [
-                        [[177.20699,-39.14578],[177.08211,-40.13857],[176.88582,-40.06598],[177.20699,-39.14578]],
-                        ...
-                    ]
-                ]
-            },
-            "properties": {
-                nullData: true
-            }
-        },
-        ...
+  "type":"FeatureCollection",
+  "features": [
+      {
+          "type":"Feature",
+          "geometry": {
+              "type":"MultiPolygon",
+              "coordinates":[
+                  [
+                      [[180,-16.06713],[180,-16.55522],[178.59684,-16.63915],[180,-16.06713]],
+                      [[178.72506,-17.01204],[178.59684,-16.63915],[180,-16.55522],[178.72506,-17.01204]]
+                  ]
+              ]
+          },
+          "properties":{}
+      },
+      {
+          "type":"Feature",
+          "geometry": {
+              "type":"MultiPolygon",
+              "coordinates":[
+                  [
+                      [[177.20699,-39.14578],[177.08211,-40.13857],[176.88582,-40.06598],[177.20699,-39.14578]],
+                      ...
+                  ]
+              ]
+          },
+          "properties": {
+              "nullData": true
+          }
+      },
+      ...
+  ]
+}
 ```

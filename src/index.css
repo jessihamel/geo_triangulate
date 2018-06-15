@@ -10,7 +10,7 @@ body {
 
 header {
   padding: 15px;
-  border-bottom: 1px solid black;
+  border-bottom: 2px solid black;
   display: flex;
   justify-content: space-between;
   color: white;
@@ -51,11 +51,13 @@ header a:hover {
   font-weight: 600;
   cursor: pointer;
   margin: 0 8px;
-  font-family: 'Electrolize', sans-serif;
 }
 .button:hover {
   color: #68B3AF;
   border: 1px solid #68B3AF;
+}
+.button:hover a {
+  color: #68B3AF;
 }
 path {
   stroke: black;

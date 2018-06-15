@@ -79,6 +79,9 @@ class App extends Component {
   }
 
   calculateTriangles() {
+    if (this.state.loading) {
+      return
+    }
     this.setState({loading: true})
     this.triangulateWorker.postMessage({
       mapData : this.state.map,
@@ -134,6 +137,10 @@ class App extends Component {
             onChange={this.onChangeSlider}
           />
           <div className='button'
+            style={{
+              opacity: this.state.loading ? 0.2 : 1,
+              pointerEvents: this.state.loading ? 'none' : 'auto'
+            }}
             onClick={this.calculateTriangles}
           >Generate Map</div>
         </div>

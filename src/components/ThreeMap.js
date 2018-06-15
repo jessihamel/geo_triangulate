@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Scene, PerspectiveCamera, WebGLRenderer, PointLight, AmbientLight, Geometry, Mesh, MeshPhysicalMaterial, MeshBasicMaterial, Vector3, Face3, BackSide, Group } from 'three'
-import OrbitControls from 'orbit-controls-es6'
 import { colors } from '../colorUtils.js'
+
+const THREE = window.THREE
 
 const height = 300
 const convertCartesian = (point) => {
@@ -10,7 +10,7 @@ const convertCartesian = (point) => {
   var lambda = point[0] * Math.PI / 180,
     phi = point[1] * Math.PI / 180,
     cosPhi = Math.cos(phi)
-  return new Vector3(
+  return new THREE.Vector3(
     radius * cosPhi * Math.cos(lambda),
     radius * cosPhi * Math.sin(lambda),
     radius * Math.sin(phi)
@@ -25,13 +25,13 @@ class ThreeMap extends Component {
   }
 
   componentDidMount() {
-    this.scene = new Scene()
-    this.camera = new PerspectiveCamera( 75, this.props.width / height, 0.1, 1000 )
+    this.scene = new THREE.Scene()
+    this.camera = new THREE.PerspectiveCamera( 75, this.props.width / height, 0.1, 1000 )
     this.camera.position.z = 2
-    this.renderer = new WebGLRenderer()
+    this.renderer = new THREE.WebGLRenderer()
     this.renderer.setSize( this.props.width, height )
     this.renderer.setClearColor( 0xFFFFFF, 1 )
-    this.controls = new OrbitControls( this.camera, this.renderer.domElement )
+    this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement )
     this.controls.enableZoom = false
     this.containerRef.current.appendChild( this.renderer.domElement )
     this.addLights()
@@ -61,25 +61,25 @@ class ThreeMap extends Component {
 
   addLights() {
     var lights = [
-      new PointLight( 0xffffff, 0.4, 0 ),
-      new PointLight( 0xffffff, 0.2, 0 ),
-      new PointLight( 0xffffff, 0.6, 0 ),
-      new PointLight( 0xffffff, 0.6, 0 )
+      new THREE.PointLight( 0xffffff, 0.4, 0 ),
+      new THREE.PointLight( 0xffffff, 0.4, 0 ),
+      new THREE.PointLight( 0xffffff, 0.4, 0 ),
+      new THREE.PointLight( 0xffffff, 0.4, 0 )
     ]
-    lights[ 0 ].position.set( 0, 200, 0 )
-    lights[ 1 ].position.set( 100, 200, 100 )
-    lights[ 2 ].position.set( - 100, - 200, - 100 )
+    lights[ 0 ].position.set( 0, 20, 0 )
+    lights[ 1 ].position.set( 10, 20, 10 )
+    lights[ 2 ].position.set( -10, -20, - 10 )
     lights[ 3 ].position.set( -10, 20, 20 )
 
     this.scene.add( lights[ 0 ] )
     this.scene.add( lights[ 1 ] )
     this.scene.add( lights[ 2 ] )
     this.scene.add( lights[ 3 ] )
-    this.scene.add( new AmbientLight( 0x404040 ) ) // soft white light
+    this.scene.add( new THREE.AmbientLight( 0x404040 ) ) // soft white light
   }
 
   createPhysicalMaterial(f, i) {
-    return new MeshPhysicalMaterial({
+    return new THREE.MeshPhysicalMaterial({
       color: f.properties.nullData ? 0xFFFFFF : colors(i),
       roughness: 1,
       metalness: 0.1,
@@ -88,14 +88,14 @@ class ThreeMap extends Component {
   }
 
   createBasicMaterial(f, i) {
-    return new MeshBasicMaterial({
+    return new THREE.MeshBasicMaterial({
       color: f.properties.nullData ? 0xe7e7e7 : colors(i),
     })
   }
 
   createMap() {
     const mapMeshes = this.props.mapData.features.map((f, i) => {
-      const featureGeometry = new Geometry()
+      const featureGeometry = new THREE.Geometry()
       const featureMaterial = this.props.material === 'basic' ?
         this.createBasicMaterial(f, i) :
         this.createPhysicalMaterial(f, i)
@@ -107,17 +107,17 @@ class ThreeMap extends Component {
         })
         const vertexLength = featureGeometry.vertices.length
         featureGeometry.faces.push(
-          new Face3(
+          new THREE.Face3(
             vertexLength - 3, vertexLength - 2, vertexLength - 1
           )
         )
       })
-      featureMaterial.side = BackSide
+      featureMaterial.side = THREE.BackSide
       featureGeometry.computeFaceNormals()
       featureGeometry.computeVertexNormals()
-      return new Mesh( featureGeometry, featureMaterial )
+      return new THREE.Mesh( featureGeometry, featureMaterial )
     })
-    this.mapGroup = new Group()
+    this.mapGroup = new THREE.Group()
     mapMeshes.forEach((mesh) => {
       this.mapGroup.add(mesh)
     })
