@@ -28,6 +28,7 @@ class App extends Component {
     this.uploadRef = React.createRef()
     this.openUpload = this.openUpload.bind(this)
     this.handleUpload = this.handleUpload.bind(this)
+    this.download = this.download.bind(this)
     this.onChangeSlider = this.onChangeSlider.bind(this)
     this.calculateTriangles = debounce(this.calculateTriangles.bind(this), 1000)
     this.onResize = debounce(this.onResize, 500)
@@ -89,6 +90,23 @@ class App extends Component {
     })
   }
 
+  download() {
+    const link = document.createElement('a')
+    document.body.appendChild(link)
+    link.setAttribute('href', this.getDownloadURL())
+    link.setAttribute('download', 'triangles.json')
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  getDownloadURL() {
+    const blob = new Blob(
+      [JSON.stringify(this.state.triangleMap)],
+      {type: 'text/json'}
+    )
+    return URL.createObjectURL(blob)
+  }
+
   render() {
     return (
       <div className='App'>
@@ -115,7 +133,7 @@ class App extends Component {
             ref={this.uploadRef}
             onChange={this.handleUpload} />
           <div className='button' onClick={this.download}>
-            <a href={`data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.state.triangleMap))}`} download="triangles.json">Download triangles</a>
+            Download triangles
           </div>
         </div>
         <Map
