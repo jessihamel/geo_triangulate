@@ -9,6 +9,7 @@ import triangleMap from './maps/world_triangles.json'
 import TriangulateWorker from './triangulate.worker.js'
 import { palette } from './colorUtils.js'
 import { debounce } from './utils.js'
+import { geoStitch } from 'd3-geo-projection'
 const minComplexity = 0
 const maxComplexity = 2500
 const defaultComplexity = 500
@@ -18,7 +19,7 @@ class App extends Component {
     super()
     this.state = {
       width: window.innerWidth,
-      map: geoFlatten(geoNormalize(worldMap)),
+      map: this.normalizeAndStitch(worldMap),
       complexity: defaultComplexity,
       triangleMap,
       loading: false,
@@ -33,6 +34,10 @@ class App extends Component {
     this.calculateTriangles = debounce(this.calculateTriangles.bind(this), 1000)
     this.onResize = debounce(this.onResize, 500)
     window.onresize = this.onResize.bind(this)
+  }
+
+  normalizeAndStitch(map) {
+    return geoFlatten(geoNormalize(geoStitch(map)))
   }
 
   initWorker() {
@@ -64,7 +69,7 @@ class App extends Component {
     const reader = new FileReader()
     reader.onload = e => {
       const mapJson = JSON.parse(reader.result)
-      const map = geoFlatten(geoNormalize(mapJson))
+      const map = this.normalizeAndStitch(mapJson)
       this.setState({map, loading: true})
       this.triangulateWorker.postMessage({
         mapData : map,

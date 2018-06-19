@@ -23,9 +23,9 @@ class Triangulate {
     voronoiTriangles.features.forEach(feature => {
       allTriangles.push({
         coords: [
-          feature.geometry.coordinates[0][0],
-          feature.geometry.coordinates[0][1],
-          feature.geometry.coordinates[0][2]
+          this.roundPoint(feature.geometry.coordinates[0][0]),
+          this.roundPoint(feature.geometry.coordinates[0][1]),
+          this.roundPoint(feature.geometry.coordinates[0][2])
         ],
         circumcenter: feature.properties.circumcenter
       })
@@ -90,6 +90,14 @@ class Triangulate {
 
   findMatchingFeatureIndex(midPt, mapData) {
     return mapData.features.findIndex((f) => geoContains(f, midPt))
+  }
+
+  roundPoint(p) {
+    const precision = 1e5
+    return [
+      Math.round(p[0] * precision) / precision,
+      Math.round(p[1] * precision) / precision
+    ]
   }
 }
 

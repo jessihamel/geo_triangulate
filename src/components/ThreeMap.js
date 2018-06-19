@@ -100,18 +100,13 @@ class ThreeMap extends Component {
         this.createBasicMaterial(f, i) :
         this.createPhysicalMaterial(f, i)
       f.geometry.coordinates[0].forEach(t => {
-        t.forEach((v, vi) => {
-          if (vi !== 3) {
-            featureGeometry.vertices.push(convertCartesian(v))
-          }
+        t.slice(0,3).map(v => {
+          return featureGeometry.vertices.push(convertCartesian(v))
         })
-        const vertexLength = featureGeometry.vertices.length
-        featureGeometry.faces.push(
-          new THREE.Face3(
-            vertexLength - 3, vertexLength - 2, vertexLength - 1
-          )
-        )
       })
+      for (var j = 0; j < featureGeometry.vertices.length; j += 3) {
+        featureGeometry.faces.push(new THREE.Face3(j, j + 1, j + 2))
+      }
       featureMaterial.side = THREE.BackSide
       featureGeometry.computeFaceNormals()
       featureGeometry.computeVertexNormals()
@@ -142,8 +137,7 @@ class ThreeMap extends Component {
 
   render() {
     return (
-      <div className='three-map' ref={this.containerRef}>
-      </div>
+      <div className='three-map' ref={this.containerRef} />
     )
   }
 }

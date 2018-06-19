@@ -6,11 +6,12 @@ body {
   padding: 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
+  color: #222;
 }
 
 header {
   padding: 15px;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid #222;
   display: flex;
   justify-content: space-between;
   color: white;
@@ -27,7 +28,7 @@ h2 {
   font-size: 1em;
 }
 header a {
-  color: black;
+  color: #222;
   text-decoration: underline;
   font-family: 'Electrolize', sans-serif;
   font-size: 18px;
@@ -43,7 +44,7 @@ header a:hover {
   transform: translateX(-50%);
 }
 .button {
-  border: 1px solid black;
+  border: 1px solid #222;
   display: inline-block;
   padding: 7px 8px 5px 8px;
   border-radius: 3px;
@@ -60,7 +61,7 @@ header a:hover {
   color: #68B3AF;
 }
 path {
-  stroke: black;
+  stroke: #222;
   stroke-width: 0.5;
 }
 .step-header {
@@ -70,14 +71,14 @@ path {
   font-family: 'Electrolize', sans-serif;
   font-size: 1.3em;
   text-transform: uppercase;
-  border-top: 1px solid black;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: 1px solid #222;
+  border-right: 1px solid #222;
+  border-bottom: 1px solid #222;
   position: absolute;
   z-index: 1;
 }
 a {
-  color: black;
+  color: #222;
 }
 a:hover {
   color: #68B3AF;
