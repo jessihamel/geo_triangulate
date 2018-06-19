@@ -49,4 +49,4 @@ Output is a GeoJSON FeatureCollection with triangle-shaped multiPolygons for eac
 
 ## Rendering in THREE.js
 
-See the /examples for a full example of how to render in three.js or checkout this example [here](https://bl.ocks.org/jessihamel/cb2752a0e56f42029e3623d4f037cfcd)
+See the [examples file](https://github.com/jessihamel/geo_triangulate/tree/master/examples) for a full example of how to render in three.js or checkout this example [here](https://bl.ocks.org/jessihamel/cb2752a0e56f42029e3623d4f037cfcd)
