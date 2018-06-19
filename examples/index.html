@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <style>
+      body { margin: 0; }
+      canvas { width: 100%; height: 100% }
+    </style>
+  </head>
+  <body>
+    <script src='./three.min.js'></script>
+    <script src='./orbitControls.js'></script>
+    <script>
+
+      var camera, scene, renderer, mapGroup;
+
+      initScene()
+      loadData()
+      animate()
+
+      function initScene() {
+        scene = new THREE.Scene()
+
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1)
+        camera.position.z = 2
+
+        renderer = new THREE.WebGLRenderer()
+        renderer.setSize( window.innerWidth, window.innerHeight )
+
+        controls = new THREE.OrbitControls( camera )
+        controls.enableZoom = false
+
+        document.body.appendChild( renderer.domElement )
+
+        mapGroup = new THREE.Group()
+        mapGroup.rotation.x = -Math.PI / 2
+        scene.add(mapGroup)
+      }
+
+      function loadData() {
+        var request = new XMLHttpRequest()
+        request.open('GET', './triangles.json')
+        request.responseType = 'json'
+        request.onload = function() {
+          drawGlobe(request.response)
+        }
+        request.send()
+      }
+
+      function drawGlobe(data) {
+        // create a mesh for each feature in the triangles.json file
+        var mapMeshes = data.features.map(function(f, i) {
+          var featureGeometry = new THREE.Geometry()
+          var featureMaterial = new THREE.MeshBasicMaterial({
+            color: f.properties.nullData ? 0xe7e7e7 : colors(i)
+          })
+
+          /**
+          * GeoJSON has closed triangle paths, but for three.js we only need
+          * the first three vertices. These are converted to three-dimensional
+          * cartesian coordinates for rendering.
+          */
+          f.geometry.coordinates[0].forEach(function(t) {
+            t.slice(0,3).map(function(v) {
+              return featureGeometry.vertices.push(convertCartesian(v))
+            })
+          })
+
+          // create faces from the vertices
+          for (var i = 0; i < featureGeometry.vertices.length; i += 3) {
+            featureGeometry.faces.push(
+              new THREE.Face3(i, i + 1, i + 2)
+            )
+          }
+          featureMaterial.side = THREE.BackSide
+          featureGeometry.computeFaceNormals()
+          featureGeometry.computeVertexNormals()
+          return new THREE.Mesh( featureGeometry, featureMaterial )
+        })
+
+        // add meshes to mapGroup
+        mapMeshes.forEach(function(mesh) {
+          mapGroup.add(mesh)
+        })
+      }
+
+      function animate() {
+        requestAnimationFrame( animate )
+        mapGroup.rotation.z += 0.003
+        renderer.render( scene, camera )
+      }
+
+      function convertCartesian(point) {
+        //https://bl.ocks.org/mbostock/2b85250396c17a79155302f91ec21224
+        var radius = 1
+        var lambda = point[0] * Math.PI / 180,
+          phi = point[1] * Math.PI / 180,
+          cosPhi = Math.cos(phi)
+        return new THREE.Vector3(
+          radius * cosPhi * Math.cos(lambda),
+          radius * cosPhi * Math.sin(lambda),
+          radius * Math.sin(phi)
+        )
+      }
+
+      function colors(i) {
+        var palette = ['#d3e2b6','#bcd6b3','#a4c9b1','#8abeb1','#68b3af']
+        return palette[i % palette.length]
+      }
+
+    </script>
+  </body>
+</html>
