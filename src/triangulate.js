@@ -6,8 +6,10 @@ import { geoVoronoi } from 'd3-geo-voronoi'
 const longitudeScale = scaleLinear().range([-180,180])
 
 class Triangulate {
-  getTriangles(mapData, nPoints) {
-    const geoPoints = this.getGeoPoints(nPoints)
+  getTriangles(mapData, nPoints, interpolation) {
+    const geoPoints = interpolation === 'random' ?
+      this.getGeoPoints(nPoints) :
+      this.getGeoPointsSpiral(nPoints)
     const allTopologyPoints = geojsonCoords(mapData)
     const uniqueTopologyPoints = [] // need uniques to prevent geoVoronoi issues
     allTopologyPoints.concat(geoPoints).forEach(p => {
@@ -84,6 +86,19 @@ class Triangulate {
       const long = longitudeScale(Math.random())
       const lat = Math.acos((2 * Math.random()) - 1) * (180 / Math.PI) - 90
       geoPoints.push([long,lat])
+    }
+    return geoPoints
+  }
+
+  /**
+  * https://beta.observablehq.com/@mbostock/spherical-fibonacci-lattice
+  */
+  getGeoPointsSpiral(nPoints) {
+    const geoPoints = []
+    const phi = (1 + Math.sqrt(5)) / 2
+    for (let i = 0; i < nPoints; i++) {
+      const [x, y] = [i / phi, i / nPoints]
+      geoPoints.push([x * 360 % 360, Math.acos(2 * y - 1) / Math.PI * 180 - 90])
     }
     return geoPoints
   }
