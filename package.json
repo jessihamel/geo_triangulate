@@ -1,8 +1,9 @@
 {
   "name": "geo_triangulate",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "https://jessihamel.github.io/geo_triangulate",
+  "license": "MIT",
   "dependencies": {
     "@mapbox/geojson-coords": "^0.0.0",
     "@mapbox/geojson-normalize": "^0.0.1",
