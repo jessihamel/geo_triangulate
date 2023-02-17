@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import * as geoNormalize from '@mapbox/geojson-normalize'
-import * as geoFlatten from 'geojson-flatten'
+import geoFlatten from 'geojson-flatten'
 import Map from './components/Map'
 import ThreeMap from './components/ThreeMap'
 import Loading from './components/Loading'
@@ -17,12 +17,14 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      width: window.innerWidth,
-      map: this.normalizeAndStitch(worldMap),
       complexity: defaultComplexity,
-      triangleMap,
+      interpolation: 'random',
       loading: false,
-      interpolation: 'random'
+      map: this.normalizeAndStitch(worldMap),
+      triangleMap,
+      progress: 0,
+      progrssActive: false,
+      width: window.innerWidth,
     }
     this.initWorker()
 
@@ -42,10 +44,19 @@ class App extends Component {
 
   initWorker() {
     this.triangulateWorker = new TriangulateWorker()
-    this.triangulateWorker.onmessage = (e) => {
+    this.triangulateWorker.onmessage = e => {
+      if (e.data.progress !== undefined) {
+        this.setState({
+          progressActive: true,
+          progress: e.data.progress,
+        })
+        return
+      }
       this.setState({
         triangleMap: e.data,
         loading: false,
+        progressActive: false,
+        progress: 0,
       })
     }
   }
@@ -70,10 +81,10 @@ class App extends Component {
     reader.onload = e => {
       const mapJson = JSON.parse(reader.result)
       const map = this.normalizeAndStitch(mapJson)
-      this.setState({map, loading: true})
+      this.setState({ map, loading: true })
       this.triangulateWorker.postMessage({
-        mapData : map,
-        complexity: this.state.complexity
+        mapData: map,
+        complexity: this.state.complexity,
       })
     }
     reader.readAsText(f, 'UTF-8')
@@ -81,16 +92,16 @@ class App extends Component {
 
   onChangeSlider(event) {
     const complexity = event.target.value
-    this.setState({complexity})
+    this.setState({ complexity })
   }
 
   calculateTriangles() {
     if (this.state.loading) {
       return
     }
-    this.setState({loading: true})
+    this.setState({ loading: true })
     this.triangulateWorker.postMessage({
-      mapData : this.state.map,
+      mapData: this.state.map,
       complexity: this.state.complexity,
       interpolation: this.state.interpolation,
     })
@@ -106,59 +117,55 @@ class App extends Component {
   }
 
   getDownloadURL() {
-    const blob = new Blob(
-      [JSON.stringify(this.state.triangleMap)],
-      {type: 'text/json'}
-    )
+    const blob = new Blob([JSON.stringify(this.state.triangleMap)], { type: 'text/json' })
     return URL.createObjectURL(blob)
   }
 
   render() {
     return (
-      <div className='App'>
+      <div className="App">
         <header>
           <div>
-            <h1 className='title'>Geo Triangulate</h1>
+            <h1 className="title">Geo Triangulate</h1>
             <h2>convert geoJSON to triangles for 3d rendering</h2>
           </div>
           <div>
-            <a href='https://github.com/jessihamel/geo_triangulate'>documentation</a>
+            <a href="https://github.com/jessihamel/geo_triangulate">documentation</a>
           </div>
         </header>
-        <div className='step'>
-          <div className='step-header' style={{borderTop: 'none'}}>
+        <div className="step">
+          <div className="step-header" style={{ borderTop: 'none' }}>
             UPLOAD
           </div>
         </div>
-        <div className='ui'>
-          <div className='button' onClick={this.openUpload}>Upload geoJSON</div>
-          <input
-            type='file'
-            style={{ display: 'none' }}
-            accept='.json'
-            ref={this.uploadRef}
-            onChange={this.handleUpload} />
-        </div>
-        <Map
-          width={this.state.width}
-          mapData={this.state.map} />
-        <div className='border' />
-        <div className='step'>
-          <div className='step-header'>
-            EDIT
+        <div className="ui">
+          <div className="button" onClick={this.openUpload}>
+            Upload geoJSON
           </div>
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            accept=".json"
+            ref={this.uploadRef}
+            onChange={this.handleUpload}
+          />
         </div>
-        <div className='slider-ui'>
-          <div className='input-wrapper'>
-            <div style={{paddingRight: '16px'}}>
-              <div className='wrapper-header'>Interpolation</div>
+        <Map width={this.state.width} mapData={this.state.map} />
+        <div className="border" />
+        <div className="step">
+          <div className="step-header">EDIT</div>
+        </div>
+        <div className="slider-ui">
+          <div className="input-wrapper">
+            <div style={{ paddingRight: '16px' }}>
+              <div className="wrapper-header">Interpolation</div>
               <div>
                 <label>
                   <input
                     type="radio"
                     value="random"
                     checked={this.state.interpolation === 'random'}
-                    onChange={() => this.setState({interpolation: 'random'})}
+                    onChange={() => this.setState({ interpolation: 'random' })}
                   />
                   Random
                 </label>
@@ -167,77 +174,67 @@ class App extends Component {
                     type="radio"
                     value="fibonacci"
                     checked={this.state.interpolation === 'fib'}
-                    onChange={() => this.setState({interpolation: 'fib'})}
+                    onChange={() => this.setState({ interpolation: 'fib' })}
                   />
                   Fibonacci
                 </label>
               </div>
             </div>
             <div>
-              <div className='wrapper-header'>Complexity</div>
+              <div className="wrapper-header">Complexity</div>
               <div>
                 <input
-                  type='range'
+                  type="range"
                   min={minComplexity}
                   max={maxComplexity}
                   value={this.state.complexity}
-                  className='slider'
+                  className="slider"
                   onChange={this.onChangeSlider}
                 />
               </div>
             </div>
           </div>
-          <div className='input-wrapper'>
-            <div className='button'
+          <div className="input-wrapper">
+            <div
+              className="button"
               style={{
                 opacity: this.state.loading ? 0.2 : 1,
-                pointerEvents: this.state.loading ? 'none' : 'auto'
+                pointerEvents: this.state.loading ? 'none' : 'auto',
               }}
               onClick={this.calculateTriangles}
-            >Generate Map</div>
+            >
+              Generate Map
+            </div>
           </div>
         </div>
-        <div style={{position: 'relative'}}>
-          <Loading loading={this.state.loading} />
-          <Map
-            width={this.state.width}
-            mapData={this.state.triangleMap} />
+        <div style={{ position: 'relative' }}>
+          <Loading loading={this.state.loading} progress={this.state.progress} />
+          <Map mapData={this.state.triangleMap} width={this.state.width} />
         </div>
-        <div className='border' />
-        <div className='step'>
-          <div className='step-header'>
-            Review and Download
-          </div>
+        <div className="border" />
+        <div className="step">
+          <div className="step-header">Review and Download</div>
         </div>
-        <div className='input-wrapper'>
-          <div className='button' onClick={this.download}>
+        <div className="input-wrapper">
+          <div className="button" onClick={this.download}>
             Download triangles
           </div>
         </div>
-        <div className='instruction'>
+        <div className="instruction">
           <div>(click and drag to rotate globe)</div>
         </div>
-        <div className='material'>
-          3d: Reflective Material
+        <div className="material">3d: Reflective Material</div>
+        <div style={{ position: 'relative' }}>
+          <Loading loading={this.state.loading} progress={this.state.progress} />
+          <ThreeMap mapData={this.state.triangleMap} width={this.state.width} />
         </div>
-        <div style={{position: 'relative'}}>
-          <Loading loading={this.state.loading} />
-          <ThreeMap
-            width={this.state.width}
-            mapData={this.state.triangleMap} />
-        </div>
-        <div className='material'>
-          3d: Basic Material
-        </div>
-        <div style={{position: 'relative'}}>
-          <Loading loading={this.state.loading} />
-          <ThreeMap
-            width={this.state.width}
-            mapData={this.state.triangleMap}
-            material='basic' />
+        <div className="material">3d: Basic Material</div>
+        <div style={{ position: 'relative' }}>
+          <Loading loading={this.state.loading} progress={this.state.progress} />
+          <ThreeMap width={this.state.width} mapData={this.state.triangleMap} material="basic" />
         </div>
       </div>
-    );
+    )
   }
 }
 

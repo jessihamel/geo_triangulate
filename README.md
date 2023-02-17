@@ -49,4 +49,8 @@ Output is a GeoJSON FeatureCollection with triangle-shaped multiPolygons for eac
 
 ## Rendering in THREE.js
 
-See the [examples file](https://github.com/jessihamel/geo_triangulate/tree/master/examples) for a full example of how to render in three.js or checkout this bl.ock [here](https://bl.ocks.org/jessihamel/cb2752a0e56f42029e3623d4f037cfcd)
+See the [examples file](https://github.com/jessihamel/geo_triangulate/tree/master/examples) for a full example of how to render in three.js.
+
+## Troubleshooting
+
+Highly detailed maps may take a while to calculate. Consider simplifying your file before uploading. I reccommend using the superb [mapshaper](https://mapshaper.org/) tool; however be sure to include the `gj2008` flag before downloading to ensure compatibility. For more info see [here](https://github.com/mbloch/mapshaper/issues/432).
