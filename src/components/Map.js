@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import * as d3Select from 'd3-selection'
+import { select } from 'd3-selection'
 import { geoPath, geoEquirectangular } from 'd3-geo'
 import { colors } from '../colorUtils.js'
 
@@ -27,7 +27,7 @@ class Map extends Component {
   }
 
   updateMap() {
-    const svg = d3Select.select(this.mapRef.current)
+    const svg = select(this.mapRef.current)
     svg.selectAll('*').remove()
     const width = this.props.width
     const proj = geoEquirectangular()
